@@ -8,7 +8,10 @@ using std::vector;
 #include <fstream>
 using std::ofstream;  //for output files (similar to cout)
 using std::ifstream;  //for input files (similar to cin)
+using std::istream;
+using std::ostream;
 #include <sstream>
+using std::istringstream;
 #include <iterator>
 
 struct TokenAndPosition{
@@ -16,12 +19,22 @@ struct TokenAndPosition{
     int _line;
     unsigned int _column;
 };
-
-vector<string> lineToTokens(){
-    ifstream myFile("data.dat");
+vector<string> lineToTokens(const string &line){
+    vector<string> tokenizedString;
+    auto iss = istringstream {line};
     string temp;
+    while (iss >> temp){
+        tokenizedString.push_back(temp);
+    }
+    return tokenizedString;
+};
+vector<TokenAndPosition> readLines(istream &is);
+void printTokens(ostream &os, const vector<TokenAndPosition> &tokens);
+
+int main() {
+    ifstream myFile("jane eyre.txt", std::ios::binary | std::ios::in);
     vector <string> dataVector;
-    int dataInfile;
+    string lineInFile;
     while (true) {
         if (!myFile) {
             if (myFile.eof()) {
@@ -29,17 +42,15 @@ vector<string> lineToTokens(){
             }
             break;
         }
-        myFile.read(reinterpret_cast<char*>(&dataInfile),sizeof(dataInfile));
-        if(!myFile) break;
-        temp = std::to_string(dataInfile);
-        dataVector.push_back(temp);
-    }
-    return dataVector;
-}
+        getline(myFile, lineInFile);
+        lineToTokens(lineInFile);
 
-int main() {
-    vector<string> lineToTokens();
-    vector <TokenAndPosition> readLines;
-    std::cout << "Hello, World!" << std::endl;
+    }
+
+    //vector <TokenAndPosition> readLines;
+
+
+
+
     return 0;
 }
